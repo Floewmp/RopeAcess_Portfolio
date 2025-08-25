@@ -33,5 +33,40 @@ yarn-error.*
 # local env files
 .env*.local
 
+# Environment variables
+.env
+.env.*
+
+# Firebase configuration (sensitive)
+firebase-config.js
+firebase-keys.json
+app.config.prod.js
+
+# EAS secrets
+eas.json
+
 # typescript
 *.tsbuildinfo
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.temp
+
+# Build artifacts
+build/
+*.apk
+*.aab
+
+# Logs
+*.log
+logs/
+
+# Test files
+test-permissions.js
+PERMISSIONS_TEST_GUIDE.md
