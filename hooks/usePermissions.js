@@ -51,11 +51,11 @@ export const usePermissions = () => {
             
             if (status !== 'granted') {
                 Alert.alert(
-                    "Permission Caméra Requise",
-                    "Cette application a besoin d'accéder à votre caméra pour prendre des photos de vos travaux. Veuillez autoriser l'accès dans les paramètres.",
+                    "Camera Permission Required",
+                    "This app needs access to your camera to take photos of your work. Please grant access in settings.",
                     [
-                        { text: "Annuler", style: "cancel" },
-                        { text: "Paramètres", onPress: openSettings }
+                        { text: "Cancel", style: "cancel" },
+                        { text: "Settings", onPress: openSettings }
                     ]
                 );
             }
@@ -64,11 +64,11 @@ export const usePermissions = () => {
         } catch (error) {
             console.warn('Error requesting camera permission:', error);
             Alert.alert(
-                "Erreur de Permission",
-                "Impossible de demander la permission caméra. Veuillez vérifier les paramètres de votre appareil.",
+                "Permission Error",
+                "Unable to request camera permission. Please check your device settings.",
                 [
-                    { text: "Annuler", style: "cancel" },
-                    { text: "Paramètres", onPress: openSettings }
+                    { text: "Cancel", style: "cancel" },
+                    { text: "Settings", onPress: openSettings }
                 ]
             );
             return false;
@@ -84,11 +84,11 @@ export const usePermissions = () => {
             
             if (status !== 'granted') {
                 Alert.alert(
-                    "Permission Galerie Requise",
-                    "Cette application a besoin d'accéder à votre galerie pour sélectionner des photos. Veuillez autoriser l'accès dans les paramètres.",
+                    "Gallery Permission Required",
+                    "This app needs access to your gallery to select photos. Please grant access in settings.",
                     [
-                        { text: "Annuler", style: "cancel" },
-                        { text: "Paramètres", onPress: openSettings }
+                        { text: "Cancel", style: "cancel" },
+                        { text: "Settings", onPress: openSettings }
                     ]
                 );
             }
@@ -97,11 +97,11 @@ export const usePermissions = () => {
         } catch (error) {
             console.warn('Error requesting media library permission:', error);
             Alert.alert(
-                "Erreur de Permission",
-                "Impossible de demander la permission galerie. Veuillez vérifier les paramètres de votre appareil.",
+                "Permission Error",
+                "Unable to request gallery permission. Please check your device settings.",
                 [
-                    { text: "Annuler", style: "cancel" },
-                    { text: "Paramètres", onPress: openSettings }
+                    { text: "Cancel", style: "cancel" },
+                    { text: "Settings", onPress: openSettings }
                 ]
             );
             return false;
@@ -123,11 +123,11 @@ export const usePermissions = () => {
             if (currentStatus.status === 'denied') {
                 setCameraPermission('denied');
                 Alert.alert(
-                    "Permission Caméra Refusée",
-                    "L'accès à la caméra a été refusé. Veuillez l'activer dans les paramètres de votre appareil pour prendre des photos.",
+                    "Camera Permission Denied",
+                    "Camera access has been denied. Please enable it in your device settings to take photos.",
                     [
-                        { text: "Annuler", style: "cancel" },
-                        { text: "Paramètres", onPress: openSettings }
+                        { text: "Cancel", style: "cancel" },
+                        { text: "Settings", onPress: openSettings }
                     ]
                 );
                 return false;
@@ -159,11 +159,11 @@ export const usePermissions = () => {
             if (currentStatus.status === 'denied') {
                 setMediaLibraryPermission('denied');
                 Alert.alert(
-                    "Permission Galerie Refusée",
-                    "L'accès à la galerie a été refusé. Veuillez l'activer dans les paramètres de votre appareil pour sélectionner des photos.",
+                    "Gallery Permission Denied",
+                    "Gallery access has been denied. Please enable it in your device settings to select photos.",
                     [
-                        { text: "Annuler", style: "cancel" },
-                        { text: "Paramètres", onPress: openSettings }
+                        { text: "Cancel", style: "cancel" },
+                        { text: "Settings", onPress: openSettings }
                     ]
                 );
                 return false;

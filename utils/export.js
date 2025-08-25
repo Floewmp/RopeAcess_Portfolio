@@ -4,30 +4,30 @@ import * as Sharing from 'expo-sharing';
 import { Alert } from 'react-native';
 import { compressImage } from './storage';
 
-// Configuration des performances
+// Performance configuration
 const EXPORT_CONFIG = {
-    MAX_IMAGES_PER_SESSION: 4, // Limite le nombre d'images par session
-    MAX_IMAGE_SIZE: 800, // Taille max en pixels
-    IMAGE_QUALITY: 0.7, // Qualité de compression
-    BATCH_SIZE: 3, // Traite les sessions par batch
-    TIMEOUT_MS: 30000 // Timeout de 30 secondes
+    MAX_IMAGES_PER_SESSION: 4, // Limit images per session
+    MAX_IMAGE_SIZE: 800, // Max size in pixels
+    IMAGE_QUALITY: 0.7, // Compression quality
+    BATCH_SIZE: 3, // Process sessions in batches
+    TIMEOUT_MS: 30000 // 30 second timeout
 };
 
-// Fonction optimisée pour convertir les images
+// Optimized image conversion function
 const imageToHtml = async (uri, index = 0) => {
     try {
-        // Limite le nombre d'images par session
+        // Limit images per session
         if (index >= EXPORT_CONFIG.MAX_IMAGES_PER_SESSION) {
             return '';
         }
 
-        // Pour les images locales, on les compresse d'abord
+        // For local images, compress first
         if (uri.startsWith('file://')) {
             try {
-                // Compresser l'image pour réduire la taille
+                // Compress image to reduce size
                 const compressedUri = await compressImage(uri, EXPORT_CONFIG.IMAGE_QUALITY);
                 
-                // Lire en base64 avec une taille limitée
+                // Read as base64 with limited size
                 const base64 = await FileSystem.readAsStringAsync(compressedUri, { 
                     encoding: FileSystem.EncodingType.Base64 
                 });
@@ -35,7 +35,7 @@ const imageToHtml = async (uri, index = 0) => {
                 return `<img src="data:image/jpeg;base64,${base64}" style="max-width: 100%; height: auto;" />`;
             } catch (e) {
                 console.warn('Image compression failed, using original:', e);
-                // Fallback vers l'image originale
+                // Fallback to original image
                 const base64 = await FileSystem.readAsStringAsync(uri, { 
                     encoding: FileSystem.EncodingType.Base64 
                 });
@@ -43,15 +43,15 @@ const imageToHtml = async (uri, index = 0) => {
             }
         }
         
-        // Pour les images Firebase, on les utilise directement
+        // For Firebase images, use directly
         return `<img src="${uri}" style="max-width: 100%; height: auto;" />`;
     } catch (e) {
         console.warn('Image processing failed:', e);
-        return '<p><i>Image non disponible</i></p>';
+        return '<p><i>Image not available</i></p>';
     }
 };
 
-// Fonction pour traiter les sessions par batch
+// Function to process sessions in batches
 const processSessionsBatch = async (sessions, startIndex, batchSize, onProgress) => {
     const endIndex = Math.min(startIndex + batchSize, sessions.length);
     const batch = sessions.slice(startIndex, endIndex);
@@ -62,36 +62,36 @@ const processSessionsBatch = async (sessions, startIndex, batchSize, onProgress)
         const s = batch[i];
         const sessionIndex = startIndex + i;
         
-        // Mise à jour du progrès
+        // Update progress
         if (onProgress) {
             onProgress(sessionIndex + 1, sessions.length);
         }
         
-        // Traitement des photos avec limite
+        // Process photos with limit
         const photos = s.photos || [];
         const limitedPhotos = photos.slice(0, EXPORT_CONFIG.MAX_IMAGES_PER_SESSION);
         
         const photoPromises = limitedPhotos.map((uri, index) => imageToHtml(uri, index));
         const photoHtmls = await Promise.all(photoPromises);
         
-        // Ajouter un message si des photos ont été tronquées
+        // Add message if photos were truncated
         const truncatedMessage = photos.length > EXPORT_CONFIG.MAX_IMAGES_PER_SESSION 
-            ? `<p><i>... et ${photos.length - EXPORT_CONFIG.MAX_IMAGES_PER_SESSION} autres photos</i></p>`
+            ? `<p><i>... and ${photos.length - EXPORT_CONFIG.MAX_IMAGES_PER_SESSION} more photos</i></p>`
             : '';
         
         batchHtml += `
             <div class="session">
                 <div class="session-header">
                     <h3>${s.name}</h3>
-                    <span>${new Date(s.startedAt).toLocaleDateString('fr-FR')}</span>
+                    <span>${new Date(s.startedAt).toLocaleDateString('en-US')}</span>
                 </div>
                 <div class="details-grid">
-                    <p><b>Employeur:</b> ${s.employer || 'N/A'}</p>
-                    <p><b>Lieu:</b> ${s.location || 'N/A'}</p>
-                    <p><b>Heures:</b> ${s.hours || 0}h</p>
-                    <p><b>Hauteur:</b> ${s.height || 0}m</p>
-                    <p class="full-width"><b>Méthodes:</b> ${s.methods || 'N/A'}</p>
-                    <p class="full-width"><b>Collègues:</b> ${s.coworkers || 'N/A'}</p>
+                    <p><b>Employer:</b> ${s.employer || 'N/A'}</p>
+                    <p><b>Location:</b> ${s.location || 'N/A'}</p>
+                    <p><b>Hours:</b> ${s.hours || 0}h</p>
+                    <p><b>Height:</b> ${s.height || 0}m</p>
+                    <p class="full-width"><b>Methods:</b> ${s.methods || 'N/A'}</p>
+                    <p class="full-width"><b>Coworkers:</b> ${s.coworkers || 'N/A'}</p>
                     <p class="full-width"><b>Notes:</b> ${s.notes || 'N/A'}</p>
                 </div>
                 <div class="photos">${photoHtmls.join('')}${truncatedMessage}</div>
@@ -104,28 +104,28 @@ const processSessionsBatch = async (sessions, startIndex, batchSize, onProgress)
 
 export const exportPortfolio = async (sessionsToExport, user, onProgress) => {
     if (sessionsToExport.length === 0) {
-        return Alert.alert("Export", "Aucune session à exporter.");
+        return Alert.alert("Export", "No sessions to export.");
     }
     
-    // Timeout pour éviter les blocages
+    // Timeout to avoid blocking
     const timeoutPromise = new Promise((_, reject) => {
         setTimeout(() => reject(new Error('Export timeout')), EXPORT_CONFIG.TIMEOUT_MS);
     });
     
     try {
-        // Calculer les totaux
+        // Calculate totals
         const totalHours = sessionsToExport.reduce((acc, s) => acc + (Number(s.hours) || 0), 0);
         const totalImages = sessionsToExport.reduce((acc, s) => acc + (s.photos?.length || 0), 0);
         
-        // Avertir si beaucoup d'images
+        // Warn if many images
         if (totalImages > 20) {
             const shouldContinue = await new Promise((resolve) => {
                 Alert.alert(
-                    "Export avec beaucoup d'images",
-                    `Cet export contient ${totalImages} images et peut prendre du temps. Continuer ?`,
+                    "Export with many images",
+                    `This export contains ${totalImages} images and may take time. Continue?`,
                     [
-                        { text: "Annuler", style: "cancel", onPress: () => resolve(false) },
-                        { text: "Continuer", onPress: () => resolve(true) }
+                        { text: "Cancel", style: "cancel", onPress: () => resolve(false) },
+                        { text: "Continue", onPress: () => resolve(true) }
                     ]
                 );
             });
@@ -133,7 +133,7 @@ export const exportPortfolio = async (sessionsToExport, user, onProgress) => {
             if (!shouldContinue) return;
         }
         
-        // Traitement par batch avec progrès
+        // Process by batch with progress
         let sessionsHtml = '';
         const batchSize = EXPORT_CONFIG.BATCH_SIZE;
         
@@ -146,11 +146,11 @@ export const exportPortfolio = async (sessionsToExport, user, onProgress) => {
             );
             sessionsHtml += batchHtml;
             
-            // Petite pause pour éviter de bloquer l'UI
+            // Small pause to avoid blocking UI
             await new Promise(resolve => setTimeout(resolve, 100));
         }
         
-        // CSS optimisé sans dépendances externes
+        // Optimized CSS without external dependencies
         const css = `
             body { 
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
@@ -227,27 +227,27 @@ export const exportPortfolio = async (sessionsToExport, user, onProgress) => {
                 </head>
                 <body>
                     <div class="header">
-                        <h1>Portfolio Accès par Corde</h1>
-                        <p><strong>Technicien:</strong> ${user?.name || 'N/A'}</p>
-                        <p><strong>Date d'export:</strong> ${new Date().toLocaleDateString('fr-FR')}</p>
+                        <h1>Rope Access Portfolio</h1>
+                        <p><strong>Technician:</strong> ${user?.name || 'N/A'}</p>
+                        <p><strong>Export Date:</strong> ${new Date().toLocaleDateString('en-US')}</p>
                     </div>
                     <div class="summary">
-                        <p><b>Total des heures:</b> ${totalHours}h</p>
-                        <p><b>Nombre de sessions:</b> ${sessionsToExport.length}</p>
+                        <p><b>Total Hours:</b> ${totalHours}h</p>
+                        <p><b>Number of Sessions:</b> ${sessionsToExport.length}</p>
                     </div>
                     ${sessionsHtml}
                 </body>
             </html>
         `;
         
-        // Créer le PDF avec timeout
+        // Create PDF with timeout
         const pdfPromise = Print.printToFileAsync({ html });
         const { uri } = await Promise.race([pdfPromise, timeoutPromise]);
         
-        // Partager le fichier
+        // Share file
         await Sharing.shareAsync(uri, { 
             mimeType: 'application/pdf', 
-            dialogTitle: 'Exporter le Portfolio' 
+            dialogTitle: 'Export Portfolio' 
         });
         
     } catch (error) {
@@ -255,13 +255,13 @@ export const exportPortfolio = async (sessionsToExport, user, onProgress) => {
         
         if (error.message === 'Export timeout') {
             Alert.alert(
-                "Export interrompu", 
-                "L'export a pris trop de temps. Essayez avec moins de sessions ou d'images."
+                "Export interrupted", 
+                "Export took too long. Try with fewer sessions or images."
             );
         } else {
             Alert.alert(
-                "Échec de l'export", 
-                "Impossible de créer ou partager le PDF. Vérifiez l'espace de stockage."
+                "Export failed", 
+                "Could not create or share PDF. Check storage space."
             );
         }
     }

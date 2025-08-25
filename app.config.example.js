@@ -40,8 +40,8 @@ export default {
       [
         "expo-image-picker",
         {
-          "photosPermission": "L'application accède à vos photos pour vous permettre de les sélectionner dans votre portfolio.",
-          "cameraPermission": "L'application accède à votre caméra pour vous permettre de prendre des photos pour votre portfolio."
+          "photosPermission": "The app accesses your photos to let you select them in your portfolio.",
+          "cameraPermission": "The app accesses your camera to let you take photos for your portfolio."
         }
       ]
     ],
