@@ -48,16 +48,16 @@ export default {
     extra: {
       // Firebase configuration - these MUST be set via Expo EAS Secrets in production
       // For development, using direct values
-      firebaseApiKey: "AIzaSyAXtoxseliZR9JY3CUwtXNOqRhOXrZcLsE",
-      firebaseAuthDomain: "rope-access-logs.firebaseapp.com",
-      firebaseProjectId: "rope-access-logs",
-      firebaseStorageBucket: "rope-access-logs.firebasestorage.app",
-      firebaseMessagingSenderId: "935811582399",
-      firebaseAppId: "1:935811582399:web:d48c950e4f03a2b3fe790a",
-      firebaseMeasurementId: "G-CPZVN6HNJM",
+      firebaseApiKey: "¨PLACEHOLDER",
+      firebaseAuthDomain: "PLACEHOLDER",
+      firebaseProjectId: "PLACEHOLDERs",
+      firebaseStorageBucket: "PLACEHOLDER",
+      firebaseMessagingSenderId: "PLACEHOLDER",
+      firebaseAppId: "PLACEHOLDER",
+      firebaseMeasurementId: "PLACEHOLDER",
       // EAS Project ID
       eas: {
-        projectId: "c7d50506-a5c7-4d5d-a8cf-a6eb4e8870ad"
+        projectId: "PLACEHOLDER"
       }
     },
   },
