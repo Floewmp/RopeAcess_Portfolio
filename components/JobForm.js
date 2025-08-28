@@ -24,7 +24,7 @@ import { APP_CONFIG, ERROR_MESSAGES } from '../utils/constants';
 const JobForm = ({ initialData = {}, onSubmit, isEdit = false }) => {
     const { user } = useAuth();
     const { coords, getCurrentLocation, reverseGeocode } = useSensors();
-    const { ensureCameraPermission, ensureMediaLibraryPermission } = usePermissions();
+    const { ensureCameraPermission, ensureMediaLibraryPermission, openSettings } = usePermissions();
     
     const [form, setForm] = useState({
         name: initialData.name || "",
@@ -90,11 +90,8 @@ const JobForm = ({ initialData = {}, onSubmit, isEdit = false }) => {
 
             const action = useCamera ? ImagePicker.launchCameraAsync : ImagePicker.launchImageLibraryAsync;
             
-            // Use the new MediaType API
-            const mediaTypes = ImagePicker.MediaType.Images;
-            
             const result = await action({ 
-                mediaTypes, 
+                mediaTypes: ImagePicker.MediaTypeOptions.Images, 
                 allowsEditing: false, 
                 quality: APP_CONFIG.IMAGE.QUALITY 
             });
@@ -142,9 +139,7 @@ const JobForm = ({ initialData = {}, onSubmit, isEdit = false }) => {
                         { text: "Cancel", style: "cancel" },
                         { 
                             text: "Settings", 
-                            onPress: () => useCamera 
-                                ? ImagePicker.openCameraPermissionsAsync()
-                                : ImagePicker.openMediaLibraryPermissionsAsync()
+                            onPress: openSettings
                         }
                     ]
                 );

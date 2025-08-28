@@ -25,7 +25,7 @@ export const APP_CONFIG = {
     
     // Validation rules
     VALIDATION: {
-        PASSWORD_MIN_LENGTH: 6,
+        PASSWORD_MIN_LENGTH: 8,
         EMAIL_REGEX: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
         NUMBER_MIN: 0
     },
@@ -72,7 +72,7 @@ export const ERROR_MESSAGES = {
     VALIDATION: {
         EMAIL_REQUIRED: 'Email is required',
         EMAIL_INVALID: 'Please enter a valid email address',
-        PASSWORD_TOO_SHORT: 'Password must be at least 6 characters long',
+        PASSWORD_TOO_SHORT: 'Password must be at least 8 characters long',
         FIELD_REQUIRED: 'This field is required',
         NUMBER_INVALID: 'Must be a valid number',
         NUMBER_TOO_SMALL: 'Must be at least'
